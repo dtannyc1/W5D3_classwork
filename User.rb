@@ -1,4 +1,6 @@
 require_relative 'questions_database'
+require_relative 'Questions'
+require_relative 'Replies'
 
 class User
     attr_accessor :id,:fname, :lname
@@ -60,5 +62,13 @@ class User
         WHERE
           id = ?
       SQL
+    end
+
+    def authored_questions
+        Question.find_by_author_id(self.id)
+    end
+    
+    def authored_replies
+        Replies.find_by_user_id(self.id)
     end
   end
