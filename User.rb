@@ -1,9 +1,11 @@
 require_relative 'questions_database'
 require_relative 'Questions'
 require_relative 'Replies'
+require_relative 'Question_follows'
+require_relative 'Question_likes'
 
 class User
-    attr_accessor :id,:fname, :lname
+    attr_accessor :id, :fname, :lname
 
     def self.all
       data = QuestionsDatabase.instance.execute("SELECT * FROM users")
@@ -67,7 +69,7 @@ class User
     def authored_questions
         Question.find_by_author_id(self.id)
     end
-    
+
     def authored_replies
         Replies.find_by_user_id(self.id)
     end
@@ -94,5 +96,14 @@ class User
         SQL
         data[0]['avg_karma']
         end
+
+
+    def followed_questions
+        QuestionFollows.followed_questions_for_user_id(self.id)
+    end
+
+    def liked_questions
+        QuestionLikes.liked_questions_for_user_id(self.id)
+    end
 
   end
