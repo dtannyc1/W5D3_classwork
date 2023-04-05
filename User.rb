@@ -44,26 +44,26 @@ class User < ModelBase
       @lname = options['lname']
     end
 
-    def save
-      if self.id
-        QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname, self.id)
-            UPDATE
-                users
-            SET
-                fname = ?, lname = ?
-            WHERE
-                id = ?
-        SQL
-      else
-        QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname)
-            INSERT INTO
-                users (fname, lname)
-            VALUES
-                (?, ?)
-        SQL
-        self.id = QuestionsDatabase.instance.last_insert_row_id
-      end
-    end
+    # def save
+    #   if self.id
+    #     QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname, self.id)
+    #         UPDATE
+    #             users
+    #         SET
+    #             fname = ?, lname = ?
+    #         WHERE
+    #             id = ?
+    #     SQL
+    #   else
+    #     QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname)
+    #         INSERT INTO
+    #             users (fname, lname)
+    #         VALUES
+    #             (?, ?)
+    #     SQL
+    #     self.id = QuestionsDatabase.instance.last_insert_row_id
+    #   end
+    # end
 
     def authored_questions
         Question.find_by_author_id(self.id)
