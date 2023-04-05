@@ -1,6 +1,6 @@
 require_relative 'questions_database'
-require_relative 'Questions'
-require_relative 'Replies'
+require_relative 'Question'
+require_relative 'Reply'
 require_relative 'Question_follows'
 require_relative 'Question_likes'
 
@@ -69,7 +69,7 @@ class User
     end
 
     def authored_replies
-        Replies.find_by_user_id(self.id)
+        Reply.find_by_user_id(self.id)
     end
 
     def average_karma

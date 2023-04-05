@@ -1,13 +1,13 @@
 require_relative 'questions_database'
 require_relative 'User'
-require_relative 'Questions'
+require_relative 'Question'
 
-class Replies
+class Reply
     attr_accessor :id,:user_id, :question_id, :reply_id, :body
 
     def self.all
       data = QuestionsDatabase.instance.execute("SELECT * FROM replies")
-      data.map { |datum| Replies.new(datum) }
+      data.map { |datum| Reply.new(datum) }
     end
 
     def self.find_by_id(id)
@@ -19,7 +19,7 @@ class Replies
           WHERE
             id = ?
       SQL
-      data.map { |datum| Replies.new(datum) }[0]
+      data.map { |datum| Reply.new(datum) }[0]
     end
 
 
@@ -61,7 +61,7 @@ class Replies
             WHERE
               user_id = ?
         SQL
-        data.map { |datum| Replies.new(datum) }
+        data.map { |datum| Reply.new(datum) }
       end
 
       def self.find_by_question_id(question_id)
@@ -73,7 +73,7 @@ class Replies
             WHERE
               question_id = ?
         SQL
-        data.map { |datum| Replies.new(datum) }
+        data.map { |datum| Reply.new(datum) }
       end
 
       def author
@@ -86,11 +86,11 @@ class Replies
 
       def parent_reply
         return nil if reply_id.nil?
-        Replies.find_by_id(reply_id)
+        Reply.find_by_id(reply_id)
       end
 
       def child_replies
-        Replies.all.select do |child|
+        Reply.all.select do |child|
             child.reply_id == self.id
         end
     end

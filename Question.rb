@@ -1,6 +1,6 @@
 require_relative 'questions_database'
 require_relative 'User'
-require_relative 'Replies'
+require_relative 'Reply'
 require_relative 'Question_follows'
 require_relative 'Question_likes'
 
@@ -81,7 +81,7 @@ class Question
       end
 
       def replies
-        Replies.find_by_question_id(self.id)
+        Reply.find_by_question_id(self.id)
       end
 
       def followers
