@@ -43,27 +43,25 @@ class Question
       @user_id = options['user_id']
     end
 
-    def create
-      raise "#{self} already in database" if self.id
-      QuestionsDatabase.instance.execute(<<-SQL, self.title, self.body, self.user_id)
-        INSERT INTO
-          questions (title, body, user_id)
-        VALUES
-          (?, ?, ?)
-      SQL
-      self.id = QuestionsDatabase.instance.last_insert_row_id
-    end
-
-    def update
-      raise "#{self} not in database" unless self.id
-      QuestionsDatabase.instance.execute(<<-SQL, self.title, self.body, self.user_id, self.id)
-        UPDATE
-          questions
-        SET
-          title = ?, body = ?, user_id = ?
-        WHERE
-          id = ?
-      SQL
+    def save
+      if self.id
+        QuestionsDatabase.instance.execute(<<-SQL, self.title, self.body, self.user_id, self.id)
+            UPDATE
+                questions
+            SET
+                title = ?, body = ?, user_id = ?
+            WHERE
+                id = ?
+        SQL
+      else
+        QuestionsDatabase.instance.execute(<<-SQL, self.title, self.body, self.user_id)
+            INSERT INTO
+                questions (title, body, user_id)
+            VALUES
+                (?, ?, ?)
+        SQL
+        self.id = QuestionsDatabase.instance.last_insert_row_id
+      end
     end
 
     def self.find_by_author_id(author_id)

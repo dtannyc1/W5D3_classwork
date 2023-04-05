@@ -31,29 +31,27 @@ class Replies
       @body = options['body']
     end
 
-    def create
-      raise "#{self} already in database" if self.id
-      QuestionsDatabase.instance.execute(<<-SQL, self.question_id, self.reply_id, self.user_id, self.body)
-        INSERT INTO
-          replies (question_id, reply_id, user_id, body)
-        VALUES
-          (?, ?,?,?)
-      SQL
-      self.id = QuestionsDatabase.instance.last_insert_row_id
+    def save
+        if self.id
+            QuestionsDatabase.instance.execute(<<-SQL, self.question_id, self.reply_id, self.user_id, self.body, self.id)
+                UPDATE
+                    replies
+                SET
+                    question_id = ?, reply_id = ?, user_id = ?, body = ?
+                WHERE
+                    id = ?
+            SQL
+        else
+            QuestionsDatabase.instance.execute(<<-SQL, self.question_id, self.reply_id, self.user_id, self.body)
+                INSERT INTO
+                    replies (question_id, reply_id, user_id, body)
+                VALUES
+                    (?, ?,?,?)
+            SQL
+            self.id = QuestionsDatabase.instance.last_insert_row_id
+        end
     end
 
-    def update
-      raise "#{self} not in database" unless self.id
-      QuestionsDatabase.instance.execute(<<-SQL, self.question_id, self.reply_id, self.user_id, self.body, self.id)
-        UPDATE
-          replies
-        SET
-          question_id = ?, reply_id = ?, user_id = ?, body = ?
-        WHERE
-          id = ?
-      SQL
-    end
-    
     def self.find_by_user_id(user_id)
         data = QuestionsDatabase.instance.execute(<<-SQL, user_id)
             SELECT

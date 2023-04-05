@@ -43,27 +43,25 @@ class User
       @lname = options['lname']
     end
 
-    def create
-      raise "#{self} already in database" if self.id
-      QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname)
-        INSERT INTO
-          users (fname, lname)
-        VALUES
-          (?, ?)
-      SQL
-      self.id = QuestionsDatabase.instance.last_insert_row_id
-    end
-
-    def update
-      raise "#{self} not in database" unless self.id
-      QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname, self.id)
-        UPDATE
-          users
-        SET
-          fname = ?, lname = ?
-        WHERE
-          id = ?
-      SQL
+    def save
+      if self.id
+        QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname, self.id)
+            UPDATE
+                users
+            SET
+                fname = ?, lname = ?
+            WHERE
+                id = ?
+        SQL
+      else
+        QuestionsDatabase.instance.execute(<<-SQL, self.fname, self.lname)
+            INSERT INTO
+                users (fname, lname)
+            VALUES
+                (?, ?)
+        SQL
+        self.id = QuestionsDatabase.instance.last_insert_row_id
+      end
     end
 
     def authored_questions
@@ -74,17 +72,17 @@ class User
         Replies.find_by_user_id(self.id)
     end
 
-    def average_karma   
+    def average_karma
         data = QuestionsDatabase.instance.execute(<<-SQL,self.id)
             SELECT
                 AVG(num_likes_per_q.num_likes) AS avg_karma
             FROM
                 (
-                    Select   --all the ques that the user has asked 
+                    Select   --all the ques that the user has asked
                        COUNT(*) AS num_likes
                     From
                         questions
-                    LEFT JOIN 
+                    LEFT JOIN
                         question_likes ON question_likes.question_id = questions.id
                     Where
                         questions.user_id = ?
@@ -92,7 +90,7 @@ class User
                         questions.id
 
                 ) AS num_likes_per_q
-            
+
         SQL
         data[0]['avg_karma']
         end
