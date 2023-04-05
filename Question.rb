@@ -85,22 +85,22 @@ class Question
       end
 
       def followers
-        QuestionFollows.followers_for_question_id(self.id)
+        QuestionFollow.followers_for_question_id(self.id)
       end
 
       def self.most_followed(n)
-        QuestionFollows.most_followed_questions(n)
+        QuestionFollow.most_followed_questions(n)
       end
 
       def likers
-        QuestionLikes.likers_for_question_id(self.id)
+        QuestionLike.likers_for_question_id(self.id)
       end
 
       def num_likes
-        QuestionLikes.num_likes_for_question_id(self.id)
+        QuestionLike.num_likes_for_question_id(self.id)
       end
 
       def self.most_liked(n)
-        QuestionLikes.most_liked_questions(n)
+        QuestionLike.most_liked_questions(n)
       end
   end

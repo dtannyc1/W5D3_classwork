@@ -2,12 +2,12 @@ require_relative 'questions_database'
 require_relative 'User'
 require_relative 'Question'
 
-class QuestionLikes
+class QuestionLike
     attr_accessor :id,:user_id, :question_id
 
     def self.all
       data = QuestionsDatabase.instance.execute("SELECT * FROM question_likes")
-      data.map { |datum| QuestionLikes.new(datum) }
+      data.map { |datum| QuestionLike.new(datum) }
     end
 
     def self.find_by_user_id(user_id)
@@ -19,7 +19,7 @@ class QuestionLikes
           WHERE
             user_id = ?
       SQL
-      data.map { |datum| QuestionLikes.new(datum) }
+      data.map { |datum| QuestionLike.new(datum) }
     end
 
     def self.find_by_question_id(question_id)
@@ -32,7 +32,7 @@ class QuestionLikes
           question_id = ?
 
       SQL
-      data.map { |datum| QuestionLikes.new(datum) }
+      data.map { |datum| QuestionLike.new(datum) }
     end
 
     def initialize(options)

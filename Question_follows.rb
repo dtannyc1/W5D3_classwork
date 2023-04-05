@@ -2,12 +2,12 @@ require_relative 'questions_database'
 require_relative 'User'
 require_relative 'Question'
 
-class QuestionFollows
+class QuestionFollow
     attr_accessor :id,:user_id, :question_id
 
     def self.all
       data = QuestionsDatabase.instance.execute("SELECT * FROM question_follows")
-      data.map { |datum| QuestionFollows.new(datum) }
+      data.map { |datum| QuestionFollow.new(datum) }
     end
 
     def self.find_by_user_id(user_id)
@@ -19,7 +19,7 @@ class QuestionFollows
           WHERE
             user_id = ?
       SQL
-      data.map { |datum| QuestionFollows.new(datum) }
+      data.map { |datum| QuestionFollow.new(datum) }
     end
 
     def self.find_by_question_id(question_id)
@@ -32,7 +32,7 @@ class QuestionFollows
           question_id = ?
 
       SQL
-      data.map { |datum| QuestionFollows.new(datum) }
+      data.map { |datum| QuestionFollow.new(datum) }
     end
 
     def self.followers_for_question_id(question_id)
