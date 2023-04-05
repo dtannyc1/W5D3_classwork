@@ -3,26 +3,27 @@ require_relative 'Question'
 require_relative 'Reply'
 require_relative 'Question_follows'
 require_relative 'Question_likes'
+require_relative 'ModelBase'
 
-class User
+class User < ModelBase
     attr_accessor :id, :fname, :lname
 
-    def self.all
-      data = QuestionsDatabase.instance.execute("SELECT * FROM users")
-      data.map { |datum| User.new(datum) }
-    end
+    # def self.all
+    #   data = QuestionsDatabase.instance.execute("SELECT * FROM users")
+    #   data.map { |datum| User.new(datum) }
+    # end
 
-    def self.find_by_id(target_id)
-      data = QuestionsDatabase.instance.execute(<<-SQL, target_id)
-          SELECT
-              *
-          FROM
-              users
-          WHERE
-              id = ?
-      SQL
-      data.map { |datum| User.new(datum) }[0]
-    end
+    # def self.find_by_id(target_id)
+    #   data = QuestionsDatabase.instance.execute(<<-SQL, target_id)
+    #       SELECT
+    #           *
+    #       FROM
+    #           users
+    #       WHERE
+    #           id = ?
+    #   SQL
+    #   data.map { |datum| User.new(datum) }[0]
+    # end
 
     def self.find_by_name(fname,lname)
       data = QuestionsDatabase.instance.execute(<<-SQL, fname,lname)
