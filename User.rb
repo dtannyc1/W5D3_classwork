@@ -84,10 +84,10 @@ class User
                        COUNT(*) AS num_likes
                     From
                         questions
-                    Where
-                        questions.user_id = ?
                     LEFT JOIN 
                         question_likes ON question_likes.question_id = questions.id
+                    Where
+                        questions.user_id = ?
                     GROUP BY
                         questions.id
 
