@@ -71,4 +71,28 @@ class User
     def authored_replies
         Replies.find_by_user_id(self.id)
     end
+
+    def average_karma   
+        data = QuestionsDatabase.instance.execute(<<-SQL,self.id)
+            SELECT
+                AVG(num_likes_per_q.num_likes) AS avg_karma
+            FROM
+                (
+                    Select   --all the ques that the user has asked 
+                       COUNT(*) AS num_likes
+                    From
+                        questions
+                    Where
+                        questions.user_id = ?
+                    LEFT JOIN 
+                        question_likes ON question_likes.question_id = questions.id
+                    GROUP BY
+                        questions.id
+
+                ) AS num_likes_per_q
+            
+        SQL
+        data[0]['avg_karma']
+        end
+
   end
